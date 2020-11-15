@@ -786,3 +786,5 @@ class SaleTests(TestCase):
         sale.delete()
 
         self.assertIsNone(sale.id)
+
+notlegalpython
