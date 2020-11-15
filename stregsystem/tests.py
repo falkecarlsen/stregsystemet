@@ -730,4 +730,59 @@ class ProductTests(TestCase):
             member=self.jeff
         )
 
-        self.assertFalse(product.is_active())
+
+class SaleTests(TestCase):
+    def setUp(self):
+        self.member = Member.objects.create(
+            username="jon",
+            balance=100
+        )
+        self.product = Product.objects.create(
+            name="beer",
+            price=1.0,
+            active=True,
+        )
+
+    def test_sale_save_not_saved(self):
+        sale = Sale(
+            member=self.member,
+            product=self.product,
+            price=100
+        )
+
+        sale.save()
+
+        self.assertIsNotNone(sale.id)
+
+    def test_sale_save_already_saved(self):
+        sale = Sale(
+            member=self.member,
+            product=self.product,
+            price=100
+        )
+        sale.save()
+
+        with self.assertRaises(RuntimeError):
+            sale.save()
+
+    def test_sale_delete_not_saved(self):
+        sale = Sale(
+            member=self.member,
+            product=self.product,
+            price=100
+        )
+
+        with self.assertRaises(RuntimeError):
+            sale.delete()
+
+    def test_sale_delete_already_saved(self):
+        sale = Sale(
+            member=self.member,
+            product=self.product,
+            price=100
+        )
+        sale.save()
+
+        sale.delete()
+
+        self.assertIsNone(sale.id)
